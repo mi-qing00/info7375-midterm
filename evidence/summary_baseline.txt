@@ -1,0 +1,13 @@
+=== baseline ===
+
+window ends   joins   polls  orders  rejected  throttled  errors  orders/s   orders accepted
+--------------------------------------------------------------------------------------------
+12:36:20          0       0       6         0          0       0       0.6   #
+12:36:30          0       0     292         0          3       0      29.2   #################
+12:36:40          0       0     607         0        395       0      60.7   ####################################
+12:36:50          0       0     114         0        103       0      11.4   #######
+
+Visitors: 1520   failed: 0
+Orders accepted: 1019   rejected at gate: 0   throttled: 501   errors: 0
+Peak orders accepted per second (best 10 s window): 60.7
+

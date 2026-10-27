@@ -60,15 +60,26 @@ def aws(monkeypatch):
             AttributeDefinitions=[{"AttributeName": "visitor_id", "AttributeType": "S"}],
             BillingMode="PAY_PER_REQUEST",
         )
+        for name, key in (("wr-counters", "counter_id"), ("wr-visitors", "visitor_id")):
+            ddb.create_table(
+                TableName=name,
+                KeySchema=[{"AttributeName": key, "KeyType": "HASH"}],
+                AttributeDefinitions=[{"AttributeName": key, "AttributeType": "S"}],
+                BillingMode="PAY_PER_REQUEST",
+            )
         a = Aws()
         a.ddb = ddb
         a.table = boto3.resource("dynamodb").Table("wr-admissions")
+        a.counters = boto3.resource("dynamodb").Table("wr-counters")
+        a.visitors = boto3.resource("dynamodb").Table("wr-visitors")
 
         for key, value in {
             "ADMISSIONS_TABLE": "wr-admissions",
             "ADMIT_PER_SECOND": "10",
-            "POLL_INTERVAL_SECONDS": "5",
+            "POLL_INTERVAL_SECONDS": "10",
             "ADMISSION_VALID_SECONDS": "600",
+            "COUNTERS_TABLE": "wr-counters",
+            "VISITORS_TABLE": "wr-visitors",
         }.items():
             monkeypatch.setenv(key, value)
         yield a

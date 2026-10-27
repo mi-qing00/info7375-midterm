@@ -1,0 +1,7 @@
+manifest sha256: a6dc145562f452b5b8a12dfa7a8a88831f00a983994276fa65e649bc0d0a7ce6
+checked 25 provided files
+  OK        25
+  MODIFIED  0
+  MISSING   0
+  EXTRA     0
+RESULT: PASS - every provided file is intact

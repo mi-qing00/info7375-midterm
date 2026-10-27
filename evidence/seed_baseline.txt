@@ -1,0 +1,9 @@
+Seeding table 'week5-inventory' in region us-east-1.
+Seeding 5 products into week5-inventory (stock 1,000,000 each)...
+  ok Stampede Ticket - Floor          3e071b87-17de-49bd-a808-6d66977ec40c
+  ok Stampede Ticket - Lower Bowl     a0ebc3c8-6d37-41f9-b55b-0a3c3a473e42
+  ok Stampede Ticket - Upper Bowl     7ef5adc9-aae8-45c5-b083-d22c5fad300d
+  ok Stampede Ticket - Balcony        3db5042d-bb0b-489d-9249-ed8be0d6cf81
+  ok Stampede Ticket - VIP            c7bf3642-1c9b-4228-a326-14dd04f54f8c
+
+Wrote /Users/kaitl/info7375_condensed/midterm/mt/week5-midterm-starter/load-test/products.csv (5 rows) - the Artillery payload file.

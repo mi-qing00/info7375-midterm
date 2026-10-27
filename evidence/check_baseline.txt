@@ -1,0 +1,12 @@
+=== baseline ===
+
+CHECK                       RESULT  MEASURED                                           EXPECTED
+-------------------------------------------------------------------------------------------------------------------
+Baseline (no waiting room)  INFO    1019 orders accepted, 501 rejected with 429 (33%)
+Baseline fails visibly      PASS    33% of requests got a 429                          >= 30%
+No server errors (5xx)      PASS    0                                                  0
+Virtual users that failed   PASS    0 of 1520 (0.00%)                                  <= 0.5%
+Client-side errors          PASS    none
+Load generator health       PASS    no client-side errors                              errors rare, or spread out, or the server erred too
+
+RESULT: PASS - no rule failed
