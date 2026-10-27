@@ -1,0 +1,78 @@
+=== baseline ===
+
+window ends   joins   polls  orders  rejected  throttled  errors  orders/s   orders accepted
+--------------------------------------------------------------------------------------------
+12:36:20          0       0       6         0          0       0       0.6   #
+12:36:30          0       0     292         0          3       0      29.2   #################
+12:36:40          0       0     607         0        395       0      60.7   ####################################
+12:36:50          0       0     114         0        103       0      11.4   #######
+
+Visitors: 1520   failed: 0
+Orders accepted: 1019   rejected at gate: 0   throttled: 501   errors: 0
+Peak orders accepted per second (best 10 s window): 60.7
+
+=== mine ===
+
+window ends   joins   polls  orders  rejected  throttled  errors  orders/s   orders accepted
+--------------------------------------------------------------------------------------------
+14:31:20          5       0       0         1          0       0       0.0   
+14:31:30        354       5       5        20          0       0       0.5   #
+14:31:40        951     355     133        51          0       0      13.3   ########
+14:31:50        123    1139      74        15          0       0       7.4   ####
+14:32:00          0    1203      95         0          0       0       9.5   ######
+14:32:10          0    1120      89         0          0       0       8.9   #####
+14:32:20          0    1040     100         0          0       0      10.0   ######
+14:32:30          0     924     103         0          0       0      10.3   ######
+14:32:40          0     815      98         0          0       0       9.8   ######
+14:32:50          0     736     109         0          0       0      10.9   ######
+14:33:00          0     612     104         0          0       0      10.4   ######
+14:33:10          0     535     101         0          0       0      10.1   ######
+14:33:20          0     422      97         0          0       0       9.7   ######
+14:33:30          0     315      93         0          0       0       9.3   ######
+14:33:40          0     227     104         0          0       0      10.4   ######
+14:33:50          0     126     103         0          0       0      10.3   ######
+14:34:00          0      25      25         0          0       0       2.5   #
+
+Visitors: 1520   failed: 0
+Orders accepted: 1433   rejected at gate: 87   throttled: 0   errors: 0
+Peak orders accepted per second (best 10 s window): 13.3
+Waiting room: admitted 1433, gave up 0
+  time in line (seconds): median 68.7   p95 125.2   max 134.9
+  status polls per visitor: median 7   max 13
+  status polls total: 9599  (the waiting room's own traffic - every poll is a request)
+
+=== final ===
+
+window ends   joins   polls  orders  rejected  throttled  errors  orders/s   orders accepted
+--------------------------------------------------------------------------------------------
+18:39:50          9       0       0         1          0       0       0.0   
+18:40:00        498       8       8        19          0       0       0.8   #
+18:40:10        954     498     127        37          0       0      12.7   ########
+18:40:20          2    1268     103         0          0       0      10.3   ######
+18:40:30          0    1192      85         0          0       0       8.5   #####
+18:40:40          0    1116      99         0          0       0       9.9   ######
+18:40:50          0    1048      87         0          0       0       8.7   #####
+18:41:00          0     934     105         0          0       0      10.5   ######
+18:41:10          0     853      94         0          0       0       9.4   ######
+18:41:20          0     734     107         0          0       0      10.7   ######
+18:41:30          0     633     107         0          0       0      10.7   ######
+18:41:40          0     542      95         0          0       0       9.5   ######
+18:41:50          0     454     113         0          0       0      11.3   #######
+18:42:00          0     324      89         0          0       0       8.9   #####
+18:42:10          0     242      96         0          0       0       9.6   ######
+18:42:20          0     145      97         0          0       0       9.7   ######
+18:42:30          0      50      51         0          0       0       5.1   ###
+
+Visitors: 1520   failed: 0
+Orders accepted: 1463   rejected at gate: 57   throttled: 0   errors: 0
+Peak orders accepted per second (best 10 s window): 12.7
+Waiting room: admitted 1463, gave up 0
+  time in line (seconds): median 70.1   p95 127.8   max 139.2
+  status polls per visitor: median 7   max 14
+  status polls total: 10041  (the waiting room's own traffic - every poll is a request)
+
+=== side by side: peak orders accepted per second ===
+
+baseline      60.7/s   ####################################
+mine          13.3/s   ########
+final         12.7/s   ########

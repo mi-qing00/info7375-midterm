@@ -1,0 +1,67 @@
+b'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
+b'!!                                                                                       !!\n'
+b'!!  Node 23 is end-of-life and not supported anymore by this software since 2025-12-01.  !!\n'
+b'!!  Please upgrade to a supported node version as soon as possible.                      !!\n'
+b'!!                                                                                       !!\n'
+b'!!  This software is currently running on node v23.1.0.                                  !!\n'
+b'!!  As of the current release of this software, supported node releases are:             !!\n'
+b'!!  - ^24.0.0 (Planned end-of-life: 2028-04-30)                                          !!\n'
+b'!!  - ^22.0.0 (Planned end-of-life: 2027-04-30)                                          !!\n'
+b'!!  - ^20.0.0 (Planned end-of-life: 2026-04-30) [DEPRECATED]                             !!\n'
+b'!!                                                                                       !!\n'
+b'!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n'
+[WARNING] aws-cdk-lib.aws_dynamodb.TableOptions#pointInTimeRecovery is deprecated, and will be removed in the next major release.
+  use `pointInTimeRecoverySpecification` instead
+[WARNING] aws-cdk-lib.aws_lambda.FunctionOptions#logRetention is deprecated, and will be removed in the next major release.
+  use `logGroup` instead
+
+✨  Synthesis time: 2.24s
+
+Week5EventDrivenStack: start: Building OrderProducer/Code
+Week5EventDrivenStack: success: Built OrderProducer/Code
+Week5EventDrivenStack: start: Building WaitingRoom/Join/Code
+Week5EventDrivenStack: success: Built WaitingRoom/Join/Code
+Week5EventDrivenStack: start: Building Week5EventDrivenStack Template
+Week5EventDrivenStack: success: Built Week5EventDrivenStack Template
+Week5EventDrivenStack: start: Publishing OrderProducer/Code (487509569908-us-east-1-09898544)
+Week5EventDrivenStack: start: Publishing WaitingRoom/Join/Code (487509569908-us-east-1-d3bf3d7a)
+Week5EventDrivenStack: start: Publishing Week5EventDrivenStack Template (487509569908-us-east-1-2317aae3)
+Week5EventDrivenStack: success: Published WaitingRoom/Join/Code (487509569908-us-east-1-d3bf3d7a)
+Week5EventDrivenStack: success: Published OrderProducer/Code (487509569908-us-east-1-09898544)
+Week5EventDrivenStack: success: Published Week5EventDrivenStack Template (487509569908-us-east-1-2317aae3)
+Week5EventDrivenStack: creating CloudFormation changeset...
+Week5EventDrivenStack: deploying... [1/1]
+Week5EventDrivenStack | 0/6 | 5:49:22 PM | UPDATE_IN_PROGRESS      | AWS::CloudFormation::Stack      | Week5EventDrivenStack User Initiated
+Week5EventDrivenStack | 0/6 | 5:49:27 PM | UPDATE_IN_PROGRESS      | AWS::Lambda::Function           | OrderProducer (OrderProducer72B63B2C) 
+Week5EventDrivenStack | 0/6 | 5:49:27 PM | UPDATE_IN_PROGRESS      | AWS::Lambda::Function           | WaitingRoom/Join (WaitingRoomJoin3275F513) 
+Week5EventDrivenStack | 0/6 | 5:49:27 PM | UPDATE_IN_PROGRESS      | AWS::Lambda::Function           | WaitingRoom/Status (WaitingRoomStatus907A07C3) 
+Week5EventDrivenStack | 1/6 | 5:49:35 PM | UPDATE_COMPLETE         | AWS::Lambda::Function           | OrderProducer (OrderProducer72B63B2C) 
+Week5EventDrivenStack | 2/6 | 5:49:35 PM | UPDATE_COMPLETE         | AWS::Lambda::Function           | WaitingRoom/Join (WaitingRoomJoin3275F513) 
+Week5EventDrivenStack | 3/6 | 5:49:36 PM | UPDATE_COMPLETE         | AWS::Lambda::Function           | WaitingRoom/Status (WaitingRoomStatus907A07C3) 
+Week5EventDrivenStack | 3/6 | 5:49:37 PM | UPDATE_IN_PROGRESS      | AWS::CloudWatch::Dashboard      | MidtermDashboard (MidtermDashboard5A2427D7) 
+Week5EventDrivenStack | 4/6 | 5:49:39 PM | UPDATE_COMPLETE         | AWS::CloudWatch::Dashboard      | MidtermDashboard (MidtermDashboard5A2427D7) 
+Week5EventDrivenStack | 5/6 | 5:49:40 PM | UPDATE_COMPLETE_CLEANUP | AWS::CloudFormation::Stack      | Week5EventDrivenStack 
+Week5EventDrivenStack | 5/6 | 5:49:41 PM | UPDATE_COMPLETE         | AWS::CloudFormation::Stack      | Week5EventDrivenStack 
+
+✅  Week5EventDrivenStack
+
+✨  Deployment time: 22.16s
+
+Outputs:
+Week5EventDrivenStack.AnalyticsStreamName = week5-analytics
+Week5EventDrivenStack.ApiEndpoint = https://hpt5p3c64i.execute-api.us-east-1.amazonaws.com/prod/
+Week5EventDrivenStack.DashboardUrl = https://us-east-1.console.aws.amazon.com/cloudwatch/home#dashboards:name=Info7375-Week5-EventDriven
+Week5EventDrivenStack.InventoryDlqUrl = https://sqs.us-east-1.amazonaws.com/487509569908/week5-inventory-dlq
+Week5EventDrivenStack.InventoryQueueUrl = https://sqs.us-east-1.amazonaws.com/487509569908/week5-inventory
+Week5EventDrivenStack.InventoryTableName = week5-inventory
+Week5EventDrivenStack.MidtermDashboardUrl = https://us-east-1.console.aws.amazon.com/cloudwatch/home?region=us-east-1#dashboards:name=Info7375-Week5-Midterm
+Week5EventDrivenStack.NotificationDlqUrl = https://sqs.us-east-1.amazonaws.com/487509569908/week5-notification-dlq
+Week5EventDrivenStack.OrderTopicArn = arn:aws:sns:us-east-1:487509569908:week5-order-events
+Week5EventDrivenStack.OrdersApiEndpointAC1CCDAC = https://hpt5p3c64i.execute-api.us-east-1.amazonaws.com/prod/
+Week5EventDrivenStack.OrdersTableName = week5-orders
+Week5EventDrivenStack.SentNotificationsTableName = week5-sent-notifications
+Stack ARN:
+arn:aws:cloudformation:us-east-1:487509569908:stack/Week5EventDrivenStack/ce545e40-d223-11f1-8eac-0e9c1d58f497
+
+✨  Total time: 44.57s
+

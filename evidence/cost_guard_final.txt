@@ -1,0 +1,8 @@
+=== Week5EventDrivenStack.template.json ===
+
+INFO  AnalyticsStreamD263FD56                           Kinesis 1 shard(s): about $0.36/day while it exists
+INFO  OrdersApiDeploymentStageprod80C33D00              POST /orders cap: 40 per second, burst 100 (as the exam requires)
+
+Estimated idle cost: about $0.36/day (list-price estimate; exam budget is $2 in total, including test traffic).
+RESULT: OK to deploy
+
