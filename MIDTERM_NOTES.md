@@ -37,3 +37,9 @@ Peak orders accepted per second (best 10 s window): 60.7
   - Lambda concurrent executions max: notification ~53, producer ~35, inventory ~23, analytics ~5 (read off the chart, approximate)
   - Kinesis records written 975 in the first minute; WriteProvisionedThroughputExceeded 0
   - Analytics oldest message age rises to ~33 s (30 s batching window, stack.py 297), DLQs 0
+- 12:48 Midterm dashboard (`Info7375-Week5-Midterm`, 16:34-16:39 UTC) screenshot of the baseline: 4xx 501, 5xx 0; errors and throttles, all functions 0; account total concurrent executions peak ~87; Time in line / Joined and admitted / People waiting: "No data available" (no waiting room deployed, as expected).
+
+## 2026-10-27 build (Option A)
+
+- 12:55 wrote lambdas/waiting_room/join_handler.py (slot taking, DESIGN_SPEC section 4), lambdas/waiting_room/status_handler.py (section 5), cdk/waiting_room.py (counters + visitors tables, env, grants, poll 10 s, memory 256, widgets hook).
+- 12:58 smoke test in Claude's scratch container (moto, same conftest fixture): 3 passed. Covered: positions 1,2,3 with slots exactly 100 ms apart; idle line gives slot = now (no catch-up burst after 60 s idle); 400 malformed, 404 unknown; same token on repeat poll; gate consumes once then 403; status after use = order_placed with no token; telemetry Joined x3, Admitted x2, TimeInLine x2; 20 threaded joins get positions 1-20 and 20 distinct slots >= 100 ms apart. This is NOT the graded test suite (teammate writes that).

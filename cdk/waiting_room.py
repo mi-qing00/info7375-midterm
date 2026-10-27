@@ -56,11 +56,33 @@ class WaitingRoom(Construct):
             removal_policy=cdk.RemovalPolicy.DESTROY,
         )
 
-        # -- 2. The two functions behind the two routes. Both are STUBS until you write them. -----------------
+        # -- Option A state (DESIGN_SPEC.md section 2) ---------------------------------------------------------
+        # One row ("line") holding next_slot_ms and next_position: the atomic counter every join updates.
+        self.counters_table = dynamodb.Table(
+            self, "Counters",
+            table_name="week5-wr-counters",
+            partition_key=dynamodb.Attribute(name="counter_id", type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+        )
+        # One row per visitor: position, joined_at_ms, admit_at_ms (the slot fixed at join).
+        self.visitors_table = dynamodb.Table(
+            self, "Visitors",
+            table_name="week5-wr-visitors",
+            partition_key=dynamodb.Attribute(name="visitor_id", type=dynamodb.AttributeType.STRING),
+            billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST,
+            time_to_live_attribute="ttl",
+            removal_policy=cdk.RemovalPolicy.DESTROY,
+        )
+
+        # -- 2. The two functions behind the two routes. ------------------------------------------------------
+        # Poll interval 10 s (not 5): status traffic shares the stage's 500 req/s limit (stack.py 337-338).
         env = {
             "ADMISSIONS_TABLE": self.admissions_table.table_name,
+            "COUNTERS_TABLE": self.counters_table.table_name,
+            "VISITORS_TABLE": self.visitors_table.table_name,
             "ADMIT_PER_SECOND": str(int(admissions_per_second)),
-            "POLL_INTERVAL_SECONDS": "5",
+            "POLL_INTERVAL_SECONDS": "10",
             "ADMISSION_VALID_SECONDS": "600",
         }
         code = lambda_.Code.from_asset(str(HANDLERS))
@@ -73,7 +95,7 @@ class WaitingRoom(Construct):
                 handler=handler,
                 code=code,
                 timeout=cdk.Duration.seconds(10),
-                memory_size=128,
+                memory_size=256,
                 environment=env,
                 log_retention=logs.RetentionDays.ONE_WEEK,
             )
@@ -84,6 +106,10 @@ class WaitingRoom(Construct):
         # admissions table, and neither function can use anything else. If your design has join read or write that
         # table (or a queue, or a cache), grant it here, or the function fails with an AccessDenied error at run time.
         self.admissions_table.grant_read_write_data(self.status_fn)
+        # Least privilege: join takes a slot and writes the visitor row; status only reads the visitor row.
+        self.counters_table.grant_read_write_data(self.join_fn)
+        self.visitors_table.grant_write_data(self.join_fn)
+        self.visitors_table.grant_read_data(self.status_fn)
 
         # Every function you create belongs in this list (the dashboard reads it).
         self.functions = [self.join_fn, self.status_fn]
@@ -108,4 +134,8 @@ class WaitingRoom(Construct):
                 width=8,
             )]
         """
-        return []
+        try:
+            import wr_widgets          # cdk/wr_widgets.py (teammate's file); absent until it is written
+        except ImportError:
+            return []
+        return wr_widgets.build(self)
