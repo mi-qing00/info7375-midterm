@@ -43,3 +43,7 @@ Peak orders accepted per second (best 10 s window): 60.7
 
 - 12:55 wrote lambdas/waiting_room/join_handler.py (slot taking, DESIGN_SPEC section 4), lambdas/waiting_room/status_handler.py (section 5), cdk/waiting_room.py (counters + visitors tables, env, grants, poll 10 s, memory 256, widgets hook).
 - 12:58 smoke test in Claude's scratch container (moto, same conftest fixture): 3 passed. Covered: positions 1,2,3 with slots exactly 100 ms apart; idle line gives slot = now (no catch-up burst after 60 s idle); 400 malformed, 404 unknown; same token on repeat poll; gate consumes once then 403; status after use = order_placed with no token; telemetry Joined x3, Admitted x2, TimeInLine x2; 20 threaded joins get positions 1-20 and 20 distinct slots >= 100 ms apart. This is NOT the graded test suite (teammate writes that).
+- Qing's Mac: `pytest -q` -> `10 passed in 8.01s` (starter wiring tests still pass with our construct). Commit 3c1cecd pushed.
+- `cost_guard.py` -> `POST /orders cap: 40 per second, burst 100 (as the exam requires)`, idle ~$0.36/day (Kinesis shard), `RESULT: OK to deploy` (evidence/cost_guard_wr1.txt)
+- 13:14:56 `cdk deploy -c waiting_room=on -c orders_rate_limit=40` -> `Deployment time: 69.22s` (evidence/deploy_wr1.log)
+- `contract_check.py` -> all 9 checks PASS, `RESULT: PASS - the contract holds` (evidence/contract_check_wr1.txt). Hard gate met (to be rerun on the final deploy).

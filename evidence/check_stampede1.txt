@@ -1,0 +1,16 @@
+=== mine ===
+
+CHECK                             RESULT  MEASURED                    EXPECTED
+--------------------------------------------------------------------------------------------------
+Every bot turned away (403)       PASS    87 rejections for 87 bots   all of them
+No order without admission        PASS    1433 orders, 1433 admitted  orders <= admitted
+Everyone who joined was admitted  PASS    1433 of 1433 (100.00%)      >= 99.5%
+No visitor gave up                PASS    0                           0
+Admission rate near configured    PASS    9.97/s (100% of 10)         60-110% (6.0-11.0/s)
+No 429s (nothing throttled)       PASS    0                           0
+No server errors (5xx)            PASS    0                           0
+Virtual users that failed         PASS    0 of 1520 (0.00%)           <= 0.5%
+Client-side errors                PASS    none
+Load generator health             PASS    no client-side errors       errors rare, or spread out, or the server erred too
+
+RESULT: PASS - no rule failed

@@ -1,0 +1,13 @@
+CHECK                                                      RESULT  DETAIL
+---------------------------------------------------------------------------------------
+Join the line: 202 with a visitor_id and status 'waiting'  PASS
+Status of a malformed id: 400                              PASS
+Admitted within the time limit                             PASS
+The admitted response carries an admission_token           PASS
+Order with NO admission: 403                               PASS
+Order with a FORGED token: 403                             PASS
+Order with the real admission: 201                         PASS
+Replaying the same admission: 403 (single use)             PASS
+After use, status no longer shows the token                PASS
+
+RESULT: PASS - the contract holds
