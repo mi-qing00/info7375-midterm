@@ -83,14 +83,15 @@ Numbers read from DynamoDB come back as `Decimal`: convert with `int()` before `
 - First thing to break at 10x the crowd: joins alone (1,000/s) exceed the 500/s stage limit; next, the single counter row
   (one DynamoDB item handles roughly 1,000 writes/s).
 
-## 8. Ownership (who edits which file)
+## 8. Ownership (updated 2026-10-27 15:30)
 
-| File | Owner |
+Qing built the option, the tests and the widgets (with Claude). Teammate: review everything (both must be able to
+explain it), draft WRITEUP.md, and check the numbers against the run files.
+
+| File | Status |
 |---|---|
-| `cdk/waiting_room.py`, `lambdas/waiting_room/join_handler.py`, `lambdas/waiting_room/status_handler.py` | Qing |
-| `tests/conftest.py` | Qing (fixture already has the three tables) |
-| `tests/test_join.py`, `tests/test_status.py`, `tests/test_concurrency.py` | teammate |
-| `cdk/wr_widgets.py` | teammate |
-| `WRITEUP.md` (design + rationale draft) | teammate drafts, both edit |
-| `MIDTERM_NOTES.md`, `evidence/`, deploys, stampede runs (Qing's AWS account, quota 1,000) | Qing |
-| `DESIGN_SPEC.md` | both, by agreement |
+| `lambdas/waiting_room/join_handler.py`, `status_handler.py`, `cdk/waiting_room.py` | done, deployed, contract PASS, stampede 1 PASS |
+| `cdk/wr_widgets.py` (3 widgets: pacing, front-door headroom, counter row) | done, not yet deployed |
+| `tests/test_join.py`, `test_status.py`, `test_concurrency.py`, `wr_helpers.py`, `mutation_check.py` | done: 29 tests, 11 of 11 mutations caught |
+| `WRITEUP.md` | teammate drafts, both edit |
+| `MIDTERM_NOTES.md`, `evidence/`, deploys and runs (Qing's account) | Qing |

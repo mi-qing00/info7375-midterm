@@ -1,0 +1,12 @@
+CAUGHT | no pacing: every slot is 'now' | 8 failed, 21 passed in 2.99s
+CAUGHT | idle attempt unconditional (overwrites a busy line) | 21 failed, 8 passed in 2.87s
+CAUGHT | busy attempt unconditional | 21 failed, 8 passed in 3.10s
+CAUGHT | joined counted before the write | 1 failed, 28 passed in 2.94s
+CAUGHT | admit before the slot | 2 failed, 27 passed in 3.25s
+CAUGHT | admission write unconditional (second token overwrites first) | 1 failed, 28 passed in 2.87s
+CAUGHT | no read of an existing admission | 1 failed, 28 passed in 2.90s
+CAUGHT | spent token shown again | 1 failed, 28 passed in 2.85s
+CAUGHT | no expiry check | 1 failed, 28 passed in 2.83s
+CAUGHT | no id validation | 4 failed, 25 passed in 2.83s
+CAUGHT | telemetry counted on the losing poll too | 1 failed, 28 passed in 2.87s
+11 of 11 mutations caught

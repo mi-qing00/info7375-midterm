@@ -43,6 +43,26 @@ class Aws:
     """Handle to the mocked resources, passed to your tests."""
 
 
+class Clock:
+    """A controllable time.time(). The handlers read time.time() on every call, so tests move time explicitly."""
+
+    def __init__(self, start=1_800_000_000.0):
+        self.now = start
+
+    def __call__(self):
+        return self.now
+
+    def advance(self, seconds):
+        self.now += seconds
+
+
+@pytest.fixture
+def clock(monkeypatch):
+    c = Clock()
+    monkeypatch.setattr("time.time", c)
+    return c
+
+
 @pytest.fixture
 def aws(monkeypatch):
     """A fresh mocked AWS with an admissions table and the environment the skeleton's handlers read."""
