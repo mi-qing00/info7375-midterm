@@ -72,3 +72,14 @@ Peak orders accepted per second (best 10 s window): 60.7
   - Line pacing: admitted ~600 per minute at 18:32 and 18:33, on the configured-rate line (600)
   - Front door headroom: whole API ~90/s (1-min avg), POST /orders ~15/s (1-min avg); limits 500/s and 40/s
   - Counter row: throttled 0; conditional-check failures ~11 in the 18:31 minute (the busy/idle switches while the line forms); UpdateItem p99 latency ~13 ms (right axis)
+
+## 2026-10-27 FINAL stampede (deployed stack with widgets; `final.json`)
+
+- 18:39:55-18:42:41 (2 min 46 s): 13,024 requests; 1,463 joins (202), 10,041 polls (200), 1,463 orders (201), 57 bots -> 57 x 403, 0 x 429, 0 x 5xx, 0 failed vusers, 0 client errors.
+- `check_run.py final.json --configured-rate 10` -> every rule PASS, `Admission rate near configured PASS 9.78/s (98% of 10)`, `RESULT: PASS - no rule failed` (evidence/check_final.txt)
+- time in line: median 70.1 s, p95 127.8 s, max 139.2 s; polls per visitor median 7, max 14
+- peak orders accepted (best 10 s window): baseline 60.7/s, stampede 1 13.3/s, final 12.7/s (window 18:40:10); steady windows 18:40:20-18:42:20 between 8.5 and 11.3/s
+- peak total load per 10 s window: 18:40:10 = 954 + 498 + 127 + 37 = 1,616 (161.6/s); peak polls 1,268 in 18:40:20 (126.8/s)
+- crowd mix differs per run (Artillery picks the scenario by weight at random): stampede 1 = 1,433 fans + 87 bots, final = 1,463 fans + 57 bots
+- Dashboard screenshots (22:37-22:41 UTC) were taken DURING the run (~22:41 UTC): 4xx 39 so far, 5xx 0, errors and throttles 0, account total concurrency ~43, Time in line median ~27 s / p95 ~47 s in the first minute; widgets show admitted ~550 in the 22:40 minute (below the 600 line: partial minute), orders well below 40/s, counter row 0 throttles, ~7 condition failures, UpdateItem p99 ~17.6 ms.
+- 18:48 final dashboard AFTER the run (22:38-22:45 UTC), read off the charts (approximate): 4xx 39 (22:40) + ~18 (22:41) = the 57 bots, 5xx 0; errors/throttles 0; account total concurrency peak 43 (baseline ~87); producer invocations up to 621 per minute across 22:40-22:42 (baseline: all orders inside ~30 s); queue depths 0, DLQs 0; analytics oldest message up to 29 s (its 30 s batching window, stack.py 297); time in line median ~27 s -> ~2.1 min, p95 up to ~2.3 min; joined 1.45K in the 22:40 minute; admitted ~550-620 per minute; people waiting (1-min running total) peak 954; API requests 7.6K in the 22:41 minute (~127/s); widgets: pacing on the 600 line at 22:41, whole API ~127/s vs 500, POST /orders ~10/s vs 40, counter row 0 throttles, 4-7 condition failures per minute, UpdateItem p99 ~11-17.6 ms.
