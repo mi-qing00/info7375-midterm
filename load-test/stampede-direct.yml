@@ -1,0 +1,79 @@
+# ============================================================================
+# STAMPEDE - WITHOUT the waiting room (the baseline)   (Info7375 Week 5)
+#
+# The SAME crowd as stampede-waiting-room.yml - same size, same arrival
+# pattern, same payload - but every fan goes straight to POST /orders.
+# Run this against the VANILLA stack (deployed without `-c waiting_room=on`),
+# then run the waiting-room version against the stack WITH the add-on, and
+# compare what the backend experienced.
+#
+# The arrival phases below are deliberately IDENTICAL to the other file.
+# If you change one, change both - otherwise the comparison is meaningless.
+#
+# RUN
+#   artillery run -e smoke    load-test/stampede-direct.yml
+#   artillery run -e stampede load-test/stampede-direct.yml --output direct.json
+#   python3 scripts/summarize_stampede.py direct.json
+#
+# (Same prerequisites as the other file: seed script, API_ENDPOINT exported.)
+#
+# Note: if you run this against a stack that HAS the waiting room, every
+# order gets a 403 - the gate is doing its job. That is a useful thing to
+# see once, but it is not a baseline.
+# ============================================================================
+config:
+  target: "{{ $env.API_ENDPOINT }}"
+  processor: "./processor.js"      # shared with stampede-waiting-room.yml
+
+  payload:
+    path: "./products.csv"
+    fields: ["product_id"]
+    skipHeader: true
+    order: random
+
+  http:
+    timeout: 20
+
+  phases:
+    - name: "smoke - a handful of visitors"
+      duration: 5
+      arrivalRate: 2
+
+  environments:
+    smoke:
+      phases:
+        - name: "smoke - a handful of visitors"
+          duration: 5
+          arrivalRate: 2
+
+    # About 150 requests, a few seconds. (No connection pool here on purpose: the exam cap was calibrated
+    # against this file exactly as it is, and it holds only a few connections at a time anyway.)
+    rehearsal:
+      phases:
+        - name: "rehearsal - about 150 visitors"
+          duration: 10
+          arrivalRate: 15
+
+    stampede:
+      phases:
+        - name: "9:59 AM - early arrivals"
+          duration: 10
+          arrivalRate: 2
+        - name: "10:00 AM - doors open"
+          duration: 15
+          arrivalRate: 100
+
+scenarios:
+  - name: "Fan buys directly (no waiting room)"
+    flow:
+      - function: "setOrderTotal"      # a real numeric total (see processor.js)
+      - post:
+          url: "/orders"
+          headers:
+            Content-Type: "application/json"
+          json:
+            user_id: "fan-{{ $randomNumber(100000, 999999) }}"
+            items:
+              - product_id: "{{ product_id }}"
+                quantity: 1
+            total: "{{ orderTotal }}"

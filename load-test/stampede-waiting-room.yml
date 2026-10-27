@@ -1,0 +1,168 @@
+# ============================================================================
+# STAMPEDE - WITH the waiting room            (Info7375 Week 5 homework)
+#
+# 10:00 AM. Tickets go on sale. Everyone shows up at the same instant.
+#
+# THIS FILE IS THE SAME FOR WAITING-ROOM OPTIONS A, B AND C. It never looks
+# inside the waiting room - it only follows the public contract:
+#
+#     POST /waiting-room/join                 -> visitor_id
+#     GET  /waiting-room/status/{visitor_id}  -> "waiting" | "admitted" + token
+#     POST /orders  (X-Visitor-Id, X-Admission-Token headers)
+#
+# so the numbers you collect are comparable across implementations.
+# Compare against stampede-direct.yml, which sends the SAME crowd straight
+# at POST /orders with no waiting room.
+#
+# BEFORE RUNNING
+#   1. Seed inventory and write products.csv:
+#        python3 scripts/seed_stampede_inventory.py
+#   2. Point the test at your API (no trailing slash):
+#        export API_ENDPOINT=$(aws cloudformation describe-stacks \
+#          --stack-name Week5EventDrivenStack \
+#          --query "Stacks[0].Outputs[?OutputKey=='ApiEndpoint'].OutputValue" \
+#          --output text | sed 's:/*$::')
+#
+# RUN
+#   artillery run -e smoke    load-test/stampede-waiting-room.yml          # ~10 visitors, seconds
+#   artillery run -e rehearsal load-test/stampede-waiting-room.yml         # ~150 visitors, ~30 seconds
+#   artillery run -e stampede load-test/stampede-waiting-room.yml \
+#                 --output waiting-room.json                               # ~1,500 visitors
+#   python3 scripts/summarize_stampede.py waiting-room.json
+#
+# With no -e flag you get the SMOKE size on purpose, so a mistyped command
+# cannot launch the big run (and its bill) by accident.
+# ============================================================================
+config:
+  target: "{{ $env.API_ENDPOINT }}"
+  processor: "./processor.js"
+
+  # One CSV row per order; Artillery picks a random product for each fan.
+  payload:
+    path: "./products.csv"
+    fields: ["product_id"]
+    skipHeader: true
+    order: random
+
+  http:
+    timeout: 20
+    # Artillery opens ONE TCP connection PER VIRTUAL USER by default. This scenario keeps ~1,400 users alive for
+    # ~2 minutes: ~1,400 simultaneous TLS connections from ONE machine. On the first AWS runs about 2% of requests
+    # (and up to 89% on a regional API) timed out before they ever reached API Gateway; a shared pool of 200
+    # connections made every one of those failures disappear. `pool` limits the TOTAL number of sockets
+    # (`maxSockets` is per user, which is not what we want).
+    pool: 200
+
+  # Default phases = the tiny smoke test (see header).
+  phases:
+    - name: "smoke - a handful of visitors"
+      duration: 5
+      arrivalRate: 2
+
+  environments:
+    smoke:
+      phases:
+        - name: "smoke - a handful of visitors"
+          duration: 5
+          arrivalRate: 2
+
+    # About 150 visitors, roughly half a minute: the right size to test your own solution before the real run.
+    rehearsal:
+      phases:
+        - name: "rehearsal - about 150 visitors"
+          duration: 10
+          arrivalRate: 15
+
+    stampede:
+      phases:
+        # A few early arrivals - gives you a clean "before" on the dashboard.
+        - name: "9:59 AM - early arrivals"
+          duration: 10
+          arrivalRate: 2
+        # Then the doors open: 100 new visitors every second for 15 seconds.
+        # 1,500 people arrive in the time it takes to read this sentence.
+        - name: "10:00 AM - doors open"
+          duration: 15
+          arrivalRate: 100
+
+scenarios:
+  # ---------------------------------------------------------------------
+  # The honest fan: join, wait politely, buy one ticket.
+  # ---------------------------------------------------------------------
+  - name: "Fan joins the line and buys"
+    weight: 95
+    flow:
+      - function: "startWaiting"          # start the stopwatch
+
+      - post:
+          url: "/waiting-room/join"
+          capture:
+            - json: "$.visitor_id"
+              as: "visitorId"
+            # Honour the server's requested poll interval, if it sends one.
+            # (strict: false -> keep the default of 5s if it does not.)
+            - json: "$.poll_interval_seconds"
+              as: "pollSeconds"
+              strict: false
+
+      # Poll until admitted. Each pass: wait, then ask "is it my turn yet?"
+      # Waiting first is realistic (a browser would not hammer the server)
+      # and is what keeps status polling from becoming the real stampede.
+      # Each wait is jittered by +/- 20%, so visitors who joined together do not poll (and
+      # therefore order) in lockstep. POLL_JITTER=0 disables it.
+      - loop:
+          - function: "waitBeforePoll"     # a jittered wait (a function, not `think`: see processor.js)
+          - get:
+              url: "/waiting-room/status/{{ visitorId }}"
+              capture:
+                - json: "$.status"
+                  as: "waitStatus"
+                  strict: false
+                - json: "$.admission_token"
+                  as: "admissionToken"
+                  strict: false
+        whileTrue: "stillWaiting"
+
+      - function: "recordOutcome"         # emits wait-time metrics
+      - function: "setOrderTotal"         # a real numeric total (see processor.js)
+
+      # Only fans who were actually admitted try to buy.
+      #
+      # GOTCHA: the {{ }} around waitStatus is REQUIRED. Written as the
+      # bare expression  waitStatus == 'admitted'  this step is silently
+      # skipped for everyone - no error, no warning, just zero orders. (We
+      # lost an afternoon's worth of confusion to that once; verified by
+      # running it.)
+      - post:
+          url: "/orders"
+          ifTrue: "{{ waitStatus }} == 'admitted'"
+          headers:
+            Content-Type: "application/json"
+            X-Visitor-Id: "{{ visitorId }}"
+            X-Admission-Token: "{{ admissionToken }}"
+          json:
+            user_id: "fan-{{ $randomNumber(100000, 999999) }}"
+            items:
+              - product_id: "{{ product_id }}"
+                quantity: 1
+            total: "{{ orderTotal }}"
+
+  # ---------------------------------------------------------------------
+  # The bot: ignores the line and goes straight for the checkout.
+  # Expect 403 on every one of these. If any get a 201, the gate is not
+  # actually protecting the backend.
+  # ---------------------------------------------------------------------
+  - name: "Bot skips the line"
+    weight: 5
+    flow:
+      - function: "setOrderTotal"
+      - post:
+          url: "/orders"
+          headers:
+            Content-Type: "application/json"
+          json:
+            user_id: "bot-{{ $randomNumber(100000, 999999) }}"
+            items:
+              - product_id: "{{ product_id }}"
+                quantity: 1
+            total: "{{ orderTotal }}"

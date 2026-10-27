@@ -1,0 +1,42 @@
+{
+  "allowed_extra": [
+    "load-test/products.csv"
+  ],
+  "files": {
+    "cdk/app.py": "ad57beeaecb35f0d0595d8c14e77e19c1fe35dd583bc43cd363cd07123e14230",
+    "cdk/cdk.json": "c0f8f156f71a85ee0c9f0974e1c83ec5640620cc82e867f7a317acb9088e3eed",
+    "cdk/requirements.txt": "1d5782c7c4b9d64f61cd335f583f275fd8d5c50040c789bdefd5fb8c970ea394",
+    "cdk/stack.py": "5078aeeb8e5e3b2023db78ffee8418fc7d155423d8220da164c96854aba1b199",
+    "lambdas/analytics_consumer/handler.py": "9912065f2fdcc1199fe674e8dd9fb330487d61adc5c90cdc21ab6dbbee12a9b6",
+    "lambdas/analytics_consumer/requirements.txt": "bf696a899c5f027b96c5cf94b36e94656f8a048414b519109b3e3907172df987",
+    "lambdas/inventory_consumer/handler.py": "785d9dc25c3eaa8c9f8e641a0e328e5b2630d3bb6b847e6dd849ce0e6642affa",
+    "lambdas/inventory_consumer/requirements.txt": "1fc27b631e46993f9aa11911eee256e728a9b7809c2256cea31c6a7545bee602",
+    "lambdas/notification_consumer/handler.py": "4daaba5e4ab4a213a035ed0fac2eede2decc64e254054cf2b45f85e98c01db34",
+    "lambdas/notification_consumer/requirements.txt": "978475e6c715abca5e6e1da3ac70da217a75a91cd0d7a7bb3ba63a90d850f783",
+    "lambdas/order_producer/handler.py": "35aa513562d2bcf78aa7de36866b02298f935c7c8bd52f662a0a10a7ac1177fd",
+    "lambdas/order_producer/requirements.txt": "589d5c829cd3f12bc1c4b3efa47c2bc33551604684ce58cf71f0ce905b959c60",
+    "lambdas/order_producer/waiting_room_gate.py": "a4acd09a7dbea7ecc3b5945a4f11bbe3584f4a8639748ca1a3d0023a8dcdfb82",
+    "lambdas/waiting_room/telemetry.py": "c68df514a745ac3f39bd51eae4ed226f7340791871f9c8532f09c53a2a7e9c5e",
+    "load-test/processor.js": "1539bd8b39d8a9ad00f807aca0214448aa6ee1eb0395ded673b63882bf30eed0",
+    "load-test/products.csv.example": "8acfd18cd653913473f093908e7e5c6d0b4d9c3cf8dd6fc3d3043d966a1c26d8",
+    "load-test/stampede-direct.yml": "cfb4b90b2851e86b0b1de33c229c357ea1b98ae5bb449bd2d547017dbd9008fe",
+    "load-test/stampede-waiting-room.yml": "e54c4007c4fe42e53f5f3316e59baef6a4c3386ef3bd6b4fac25a4b8c6ed8069",
+    "scripts/check_run.py": "1d88a0924465938178a943831be15fab393977dc7aaa05f96396b07220f097a0",
+    "scripts/contract_check.py": "356f72a18d7d2c04196e616f77510fd8ed4603981f556f69eda5bdee9de57ba7",
+    "scripts/cost_guard.py": "f945e7656860dcc2a678ae6d18d967a5a736d1d2becb86a7cb7e679502c47be4",
+    "scripts/preflight.py": "20d6906645f31bca7517ea721bc0abc9283f447f7b0e43b1d29f918b65cb731c",
+    "scripts/seed_stampede_inventory.py": "61c8edb843d2ba2b7cfe7c8ab37aa4d8ecf8f5eacd0f71b4ab008729c79c5c85",
+    "scripts/summarize_stampede.py": "94440081b277a5a9c4624cea4f82e4af27e95b751ef90ed92472a890e7f1ea34",
+    "scripts/verify_kit.py": "10e26f151821aaae631385be307cabcf530b094b028fb13834e42658dac86826"
+  },
+  "kit": "INFO7375 Week 5 midterm starter",
+  "locked_dirs": [
+    "scripts",
+    "load-test",
+    "lambdas/order_producer",
+    "lambdas/inventory_consumer",
+    "lambdas/notification_consumer",
+    "lambdas/analytics_consumer"
+  ],
+  "version": 1
+}

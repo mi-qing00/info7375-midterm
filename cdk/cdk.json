@@ -1,0 +1,8 @@
+{
+  "app": "python3 app.py",
+  "context": {
+    "region": "us-east-1",
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true
+  }
+}
