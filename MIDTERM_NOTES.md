@@ -47,3 +47,14 @@ Peak orders accepted per second (best 10 s window): 60.7
 - `cost_guard.py` -> `POST /orders cap: 40 per second, burst 100 (as the exam requires)`, idle ~$0.36/day (Kinesis shard), `RESULT: OK to deploy` (evidence/cost_guard_wr1.txt)
 - 13:14:56 `cdk deploy -c waiting_room=on -c orders_rate_limit=40` -> `Deployment time: 69.22s` (evidence/deploy_wr1.log)
 - `contract_check.py` -> all 9 checks PASS, `RESULT: PASS - the contract holds` (evidence/contract_check_wr1.txt). Hard gate met (to be rerun on the final deploy).
+
+## 2026-10-27 rehearsal and stampede 1 (Option A, rate 10/s, poll 10 s)
+
+- 14:26 rehearsal (150 visitors): 146 joins (202), 146 admitted, 146 orders (201), 4 bots -> 4 x 403, 0 x 429, 0 x 5xx, wait min 8.2 s / median 10.1 s / max 12.5 s, 1 poll each. `RESULT: PASS` (rate SKIP: too short). (evidence/check_rehearsal.txt)
+- 14:31:13-14:34:07 stampede 1 (`mine.json`, 2 min 40 s): 12,552 requests; 1,433 joins, 9,599 polls (200), 1,433 orders (201), 87 bots -> 87 x 403, 0 x 429, 0 x 5xx, 0 failed vusers, 0 client errors.
+  - `check_run.py mine.json --configured-rate 10` -> `Admission rate near configured PASS 9.97/s (100% of 10)`, every rule PASS, `RESULT: PASS - no rule failed` (evidence/check_stampede1.txt)
+  - time in line: median 68.7 s, p95 125.2 s, max 134.9 s; polls per visitor median 7, max 13 (far below the 120-poll give-up)
+  - peak orders accepted (best 10 s window): baseline 60.7/s -> waiting room 13.3/s (window 14:31:40); steady windows 14:32:00-14:33:50 between 8.9 and 10.9/s
+  - request load per 10 s window (joins + polls + orders + bots): 14:31:40 = 951+355+133+51 = 1,490 (149/s, the peak); 14:31:50 = 1,351; 14:32:00 = 1,298. Peak polls 1,203 in 14:32:00 (120/s) = about 1,200 people waiting, each polling once per 10 s.
+- Correction to the earlier estimate (DESIGN_SPEC section 7 said ~250/s total at 10 s polling): measured peak is 149/s. The estimate added joins (100/s) and polls of the full line at the same moment, but a visitor's first poll comes one interval (~10 s) after joining, so the join peak (14:31:40) and the poll peak (14:32:00) fall in different windows.
+- Interpretation of the 13.3/s window: slots are spaced exactly 0.1 s, but a visitor orders at their first poll AFTER their slot, i.e. up to one poll interval late. Orders of several slot-windows can land in one 10 s window (133) and the next is light (74); the average over the steady middle is 9.97/s. Plausible mechanism, `unverified` beyond these counts.
